@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { Header, Segment, Loader, Dimmer } from "semantic-ui-react";
-import moment from "moment";
+import { Header, Segment, Loader, Dimmer, Divider } from "semantic-ui-react";
 import MatchFeed from "../Components/Feeds/MatchFeed";
 import DateFilter from "../Components/Filters/DateFilter";
 
@@ -36,7 +35,6 @@ class FrontpageView extends Component {
   }
 
   filterMatchesByDate = (matches, date = new Date()) => {
-    console.log(date);
     return matches.filter(match => {
       const matchDay = new Date(match.start).toDateString();
       return matchDay === date.toDateString();
@@ -76,6 +74,7 @@ class FrontpageView extends Component {
         </Dimmer>
         <Header as="h1">Oddsmodel-Dashboard</Header>
         <DateFilter updateDate={this.updateDate} />
+        <Divider />
         <MatchFeed matches={eliteserien} league="Eliteserien" />
         <MatchFeed matches={obosligaen} league="Obosligaen" />
       </Segment>
