@@ -6,7 +6,7 @@ import FrontpageView from "./Views/FrontpageView";
 class App extends Component {
   render() {
     return (
-      <Container>
+      <Container text>
         <HashRouter>
           <Switch>
             <Route exact path="/" component={props => <FrontpageView />} />
