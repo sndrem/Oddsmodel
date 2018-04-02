@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import moment from "moment";
 class DateFilter extends Component {
   constructor(props) {
@@ -18,12 +19,21 @@ class DateFilter extends Component {
   };
   render() {
     return (
-      <input
-        type="date"
-        value={this.state.data.date}
-        onChange={this.handleChange}
-      />
+      <div>
+        <p>
+          <label>Velg dato</label>
+        </p>
+        <input
+          type="date"
+          name="datefilter"
+          value={this.state.data.date}
+          onChange={this.handleChange}
+        />
+      </div>
     );
   }
 }
+DateFilter.propTypes = {
+  updateDate: PropTypes.func.isRequired
+};
 export default DateFilter;

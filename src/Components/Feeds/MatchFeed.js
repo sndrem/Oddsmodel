@@ -1,16 +1,18 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import {
   Header,
   Table,
   Segment,
   Dimmer,
   Loader,
-  Button,
   TextArea,
   Grid
 } from "semantic-ui-react";
 import moment from "moment";
+import "moment/locale/nb";
 import Abbreviations from "../../Tools/Abbreviations";
+import "./MatchFeed.css";
 
 class MatchFeed extends Component {
   constructor(props) {
@@ -39,31 +41,67 @@ class MatchFeed extends Component {
   }
 
   createElements = matches => {
-    return matches.map(m => (
-      <Table.Row key={m.matchId}>
-        <Table.Cell>
-          {m.homeTeamName} - {m.awayTeamName}
-        </Table.Cell>
-        <Table.Cell>{moment(m.start).format("dddd DD. MMMM HH:mm")}</Table.Cell>
-        <Table.Cell>
-          {this.formatPercent(m.bets.oddsMarkets[0].homeValue)}
-        </Table.Cell>
-        <Table.Cell>
-          {this.formatPercent(m.bets.oddsMarkets[0].drawValue)}
-        </Table.Cell>
-        <Table.Cell>
-          {this.formatPercent(m.bets.oddsMarkets[0].awayValue)}
-        </Table.Cell>
-      </Table.Row>
-    ));
+    return matches.filter(m => m.bets.oddsMarkets.length > 0).map(m => {
+      const { homeValue, drawValue, awayValue } = m.bets.oddsMarkets[0];
+      return (
+        <Table.Row key={m.matchId}>
+          <Table.Cell>
+            {m.homeTeamName} - {m.awayTeamName}
+          </Table.Cell>
+          <Table.Cell width={5}>
+            {moment(m.start)
+              .add(2, "hours")
+              .format("dddd DD. MMMM HH:mm")}
+          </Table.Cell>
+          {this.createBetCell(homeValue)}
+          {this.createBetCell(drawValue)}
+          {this.createBetCell(awayValue)}
+        </Table.Row>
+      );
+    });
   };
 
-  formatPercent = value => `${(value * 100).toFixed(2)} %`;
+  createBetCell = bet => {
+    if (bet) {
+      return <Table.Cell width={3}>{this.formatPercent(bet)}</Table.Cell>;
+    }
+    return <Table.Cell>-</Table.Cell>;
+  };
+
+  // createTableCellsForBets = (bet, rest) => {
+  //   if (rest.length === 2) {
+  //     const rest1 = rest[0];
+  //     const rest2 = rest[1];
+  //     if (bet > draw && home > away) {
+  //           <Table.Cell color="green">{this.formatPercent(home)}</Table.Cell>
+  //           <Table.Cell>{this.formatPercent(draw)}</Table.Cell>
+  //           <Table.Cell>{this.formatPercent(away)}</Table.Cell>
+  //     } else if (draw > home && draw > away) {
+  //           <Table.Cell>{this.formatPercent(home)}</Table.Cell>
+  //           <Table.Cell color="orange">{this.formatPercent(draw)}</Table.Cell>
+  //           <Table.Cell>{this.formatPercent(away)}</Table.Cell>
+  //     } else if (away > home && away > draw) {
+  //           <Table.Cell>{this.formatPercent(home)}</Table.Cell>
+  //           <Table.Cell>{this.formatPercent(draw)}</Table.Cell>
+  //           <Table.Cell color="green">{this.formatPercent(away)}</Table.Cell>
+  //         </span>
+  //     }
+  //   }
+  //   return <Table.Cell>Odds ikke tilgjengelig</Table.Cell>;
+  // };
+
+  formatPercent = value => `${(value * 100).toFixed(1)} %`;
 
   formatFreeText = league => {
     if (this.state.data.matches.length > 0) {
       const abbrevs = new Abbreviations();
       const text = this.state.data.matches
+        .filter(m => {
+          const start = moment(m.start)
+            .add(2, "hours")
+            .hour();
+          return start === 18;
+        })
         .map(m => {
           const homeTeamAbbrev = abbrevs.getAbbreviations(
             m.homeTeamName,
@@ -90,6 +128,13 @@ class MatchFeed extends Component {
       this.setState({
         data: {
           freeText: text,
+          matches: this.state.data.matches
+        }
+      });
+    } else {
+      this.setState({
+        data: {
+          freeText: "",
           matches: this.state.data.matches
         }
       });
@@ -124,10 +169,17 @@ class MatchFeed extends Component {
         </Grid.Column>
         <Grid.Column>
           <Header as="h3">Fritekst til stolpe</Header>
-          <TextArea autoHeight value={this.state.data.freeText} />
+          <TextArea
+            className="wide-text"
+            autoHeight
+            value={this.state.data.freeText}
+          />
         </Grid.Column>
       </Grid>
     );
   }
 }
+MatchFeed.propTypes = {
+  league: PropTypes.string.isRequired
+};
 export default MatchFeed;
