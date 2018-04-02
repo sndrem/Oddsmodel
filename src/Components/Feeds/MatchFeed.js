@@ -169,6 +169,7 @@ class MatchFeed extends Component {
         </Grid.Column>
         <Grid.Column>
           <Header as="h3">Fritekst til stolpe</Header>
+          <span>Her dukker bare kamper som begynner kl. 18.00 opp.</span>
           <TextArea
             className="wide-text"
             autoHeight
