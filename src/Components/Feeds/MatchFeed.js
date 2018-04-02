@@ -53,19 +53,31 @@ class MatchFeed extends Component {
               .add(2, "hours")
               .format("dddd DD. MMMM HH:mm")}
           </Table.Cell>
-          {this.createBetCell(homeValue)}
+          {this.createBetCell(homeValue, homeValue > awayValue)}
           {this.createBetCell(drawValue)}
-          {this.createBetCell(awayValue)}
+          {this.createBetCell(awayValue, awayValue > homeValue)}
         </Table.Row>
       );
     });
   };
 
-  createBetCell = bet => {
+  createBetCell = (bet, bestBet = null) => {
+    const cssColor = this.getBestBetColor(bestBet);
     if (bet) {
-      return <Table.Cell width={3}>{this.formatPercent(bet)}</Table.Cell>;
+      return (
+        <Table.Cell className={cssColor} width={3}>
+          {this.formatPercent(bet)}
+        </Table.Cell>
+      );
     }
     return <Table.Cell>-</Table.Cell>;
+  };
+
+  getBestBetColor = bet => {
+    if (bet === null) {
+      return "";
+    }
+    return bet ? "green" : "red";
   };
 
   // createTableCellsForBets = (bet, rest) => {
@@ -153,7 +165,7 @@ class MatchFeed extends Component {
 
             <Header as="h3">{this.props.league}</Header>
 
-            <Table celled>
+            <Table striped>
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell>Kamp</Table.HeaderCell>

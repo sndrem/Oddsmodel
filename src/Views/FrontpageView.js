@@ -17,6 +17,7 @@ class FrontpageView extends Component {
   }
 
   componentDidMount() {
+    document.title = "Odds";
     Promise.all([this.fetchMatches(), this.fetchBets()]).then(values => {
       const eliteserien = values[0].competitions[0].matches;
       const obosligaen = values[0].competitions[1].matches;
