@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import moment from "moment";
+import moment from "moment-timezone";
 import { Header, Segment, Loader, Dimmer, Divider } from "semantic-ui-react";
 import MatchFeed from "../Components/Feeds/MatchFeed";
 import DateFilter from "../Components/Filters/DateFilter";
@@ -22,6 +22,7 @@ class FrontpageView extends Component {
     Promise.all([this.fetchMatches(), this.fetchBets()]).then(values => {
       const eliteserien = values[0].competitions[0].matches;
       const obosligaen = this.addHours(values[0].competitions[1].matches, 2);
+      console.log(values[0].competitions);
 
       const bets = values[1].feed;
       const eliteserieBets = this.connectGamesAndBets(eliteserien, bets);
@@ -39,7 +40,9 @@ class FrontpageView extends Component {
   addHours = (matches, hour) =>
     matches.map(match => ({
       ...match,
-      start: moment(match.start).add(2, "hours")
+      start: moment(match.start)
+        .add(hour, "hours")
+        .format()
     }));
 
   filterMatchesByDate = (matches, date = new Date()) => {

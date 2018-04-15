@@ -9,7 +9,7 @@ import {
   TextArea,
   Grid
 } from "semantic-ui-react";
-import moment from "moment";
+import moment from "moment-timezone";
 import "moment/locale/nb";
 import Abbreviations from "../../Tools/Abbreviations";
 import "./MatchFeed.css";
@@ -27,7 +27,6 @@ class MatchFeed extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps.matches);
     this.setState(
       {
         data: {
@@ -108,7 +107,7 @@ class MatchFeed extends Component {
       const abbrevs = new Abbreviations();
       const text = this.state.data.matches
         .filter(m => {
-          const start = moment(m.start).hour();
+          const start = moment.parseZone(m.start).hour();
           return start === 18;
         })
         .map(m => {
