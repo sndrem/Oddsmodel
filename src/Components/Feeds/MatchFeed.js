@@ -27,6 +27,7 @@ class MatchFeed extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps.matches);
     this.setState(
       {
         data: {
@@ -49,9 +50,7 @@ class MatchFeed extends Component {
             {m.homeTeamName} - {m.awayTeamName}
           </Table.Cell>
           <Table.Cell width={5}>
-            {moment(m.start)
-              .add(2, "hours")
-              .format("dddd DD. MMMM HH:mm")}
+            {moment(m.start).format("dddd DD. MMMM HH:mm")}
           </Table.Cell>
           {this.createBetCell(homeValue, homeValue > awayValue)}
           {this.createBetCell(drawValue)}
@@ -109,9 +108,7 @@ class MatchFeed extends Component {
       const abbrevs = new Abbreviations();
       const text = this.state.data.matches
         .filter(m => {
-          const start = moment(m.start)
-            .add(2, "hours")
-            .hour();
+          const start = moment(m.start).hour();
           return start === 18;
         })
         .map(m => {
