@@ -106,10 +106,6 @@ class MatchFeed extends Component {
     if (this.state.data.matches.length > 0) {
       const abbrevs = new Abbreviations();
       const text = this.state.data.matches
-        // .filter(m => {
-        //   const start = moment.parseZone(m.start).hour();
-        //   return start === 18;
-        // })
         .map(m => {
           const homeTeamAbbrev = abbrevs.getAbbreviations(
             m.homeTeamName,
